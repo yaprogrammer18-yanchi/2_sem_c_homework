@@ -119,7 +119,7 @@ TreeNode* balance(TreeNode* node)
     return node;
 }
 
-TreeNode* insert(TreeNode* node, const char* code, const char* name)
+TreeNode* insert(AVL* tree, TreeNode* node, const char* code, const char* name)
 {
     if (node == NULL) {
         TreeNode* newNode = calloc(1, sizeof(TreeNode));
@@ -128,15 +128,16 @@ TreeNode* insert(TreeNode* node, const char* code, const char* name)
         strcpy(newNode->name, name);
         strcpy(newNode->code, code);
         newNode->balance = 0;
+        tree->size++;
         return newNode;
     }
 
     int cmp = strcmp(code, node->code);
 
     if (cmp < 0) {
-        node->leftChild = insert(node->leftChild, code, name);
+        node->leftChild = insert(tree, node->leftChild, code, name);
     } else if (cmp > 0) {
-        node->rightChild = insert(node->rightChild, code, name);
+        node->rightChild = insert(tree, node->rightChild, code, name);
     }
     // обновление имени существующего узла с данным кодом.
     else {
@@ -154,8 +155,7 @@ void avlPush(AVL* tree, const char* code, const char* name)
     if (tree == NULL) {
         return;
     }
-    tree->root = insert(tree->root, code, name);
-    tree->size++;
+    tree->root = insert(tree, tree->root, code, name);
 }
 
 TreeNode* findMin(TreeNode* node)
@@ -165,7 +165,7 @@ TreeNode* findMin(TreeNode* node)
     return node;
 }
 
-TreeNode* avlDelete(TreeNode* node, const char* code)
+TreeNode* avlDelete(AVL* tree, TreeNode* node, const char* code)
 {
     if (node == NULL)
         return NULL;
@@ -173,21 +173,23 @@ TreeNode* avlDelete(TreeNode* node, const char* code)
     int cmp = strcmp(code, node->code);
 
     if (cmp < 0) {
-        node->leftChild = avlDelete(node->leftChild, code);
+        node->leftChild = avlDelete(tree, node->leftChild, code);
     } else if (cmp > 0) {
-        node->rightChild = avlDelete(node->rightChild, code);
+        node->rightChild = avlDelete(tree, node->rightChild, code);
     } else {
         if (node->leftChild == NULL) {
             TreeNode* tmp = node->rightChild;
             free(node->code);
             free(node->name);
             free(node);
+            tree->size--;
             return tmp;
         } else if (node->rightChild == NULL) {
             TreeNode* tmp = node->leftChild;
             free(node->code);
             free(node->name);
             free(node);
+            tree->size--;
             return tmp;
         }
         TreeNode* succ = findMin(node->rightChild);
@@ -197,7 +199,7 @@ TreeNode* avlDelete(TreeNode* node, const char* code)
         node->name = malloc(strlen(succ->name) + 1);
         strcpy(node->code, succ->code);
         strcpy(node->name, succ->name);
-        node->rightChild = avlDelete(node->rightChild, succ->code);
+        node->rightChild = avlDelete(tree, node->rightChild, succ->code);
     }
     updateBalance(node);
     return balance(node);
@@ -208,8 +210,7 @@ void avlDeleteNode(AVL* tree, const char* code)
     if (tree == NULL || tree->root == NULL) {
         return;
     }
-    tree->root = avlDelete(tree->root, code);
-    tree->size--;
+    tree->root = avlDelete(tree, tree->root, code);
 }
 
 char* find(AVL* tree, const char* code)
@@ -285,10 +286,43 @@ void avlSave(AVL* tree, const char* filename)
 
 bool isEmpty(AVL* tree)
 {
-    return (tree->root == NULL || tree == NULL);
+    return tree->root == NULL || tree == NULL;
 }
 
 int avlSize(AVL* tree)
 {
     return tree->size;
+}
+
+// подразумевается, что данные в файле корректны.
+// Предусмотрена только ситуация, когда нет ":", одновременно обрабатывает пустые строки
+AVL* loadBase(const char* filename)
+{
+    AVL* tree = avlCreate();
+    FILE* file = fopen(filename, "r");
+    if (file == NULL) {
+        printf("Файл не найден\n");
+        return NULL;
+    }
+    char buffer[100] = { 0 };
+    while ((fgets(buffer, sizeof(buffer), file) != NULL)) {
+        size_t indexOfLineBreak = strcspn(buffer, "\n");
+        if (indexOfLineBreak < sizeof(buffer)) {
+            buffer[indexOfLineBreak] = '\0';
+        } else {
+            buffer[sizeof(buffer) - 1] = '\0';
+        }
+        char* colon = strchr(buffer, ':');
+        if (colon == NULL) {
+            continue;
+        }
+        *colon = '\0';
+        char* code = buffer;
+        char* name = colon + 1;
+        avlPush(tree, code, name);
+    }
+    fclose(file);
+    int qty = avlSize(tree);
+    printf("Загружено %d аэропортов. Система готова к работе.\n", qty);
+    return tree;
 }

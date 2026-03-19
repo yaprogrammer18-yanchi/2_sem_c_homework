@@ -3,43 +3,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-// подразумевается, что данные в файле корректны.
-// Предусмотрена только ситуация, когда нет ":", одновременно обрабатывает пустые строки
-AVL* loadBase(const char* filename)
-{
-    AVL* tree = avlCreate();
-    FILE* file = fopen(filename, "r");
-    if (file == NULL) {
-        printf("Файл не найден\n");
-        return NULL;
-    }
-    char buffer[100] = { 0 };
-    while ((fgets(buffer, sizeof(buffer), file) != NULL)) {
-        size_t indexOfLineBreak = strcspn(buffer, "\n");
-        if (indexOfLineBreak < sizeof(buffer)) {
-            buffer[indexOfLineBreak] = '\0';
-        } else {
-            buffer[sizeof(buffer) - 1] = '\0';
-        }
-        char* colon = strchr(buffer, ':');
-        if (colon == NULL) {
-            continue;
-        }
-        *colon = '\0';
-        char* code = buffer;
-        char* name = colon + 1;
-        avlPush(tree, code, name);
-    }
-    fclose(file);
-    return tree;
-}
-
-// просто перепись всего дерева
-void save(AVL* tree, const char* filename)
-{
-    avlSave(tree, filename);
-}
-
 void interface(AVL* tree)
 {
     printf("Вы работаете с базой аэропортов\n");
@@ -57,12 +20,11 @@ void interface(AVL* tree)
         } else {
             buffer[sizeof(buffer) - 1] = '\0';
         }
-
         if ((strcmp(buffer, "quit") == 0)) {
             printf("Работа с базой завершена.\n");
             break;
         } else if (strcmp(buffer, "save") == 0) {
-            save(tree, "src/flightCheckIn/airports.txt");
+            avlSave(tree, "src/flightCheckIn/airports.txt");
             int quantity = avlSize(tree);
             printf("База сохранена: %d аэропортов.\n", quantity);
         } else {
@@ -106,9 +68,15 @@ void interface(AVL* tree)
     }
 }
 
-int main()
+int main(int argc, char* argv[])
 {
-    AVL* tree = loadBase("src/flightCheckIn/airports.txt");
+    if (argc < 2) {
+        return 1;
+    }
+    AVL* tree = loadBase(argv[1]);
+    if (tree == NULL) {
+        return 1;
+    }
     interface(tree);
     avlFree(tree);
     return 0;

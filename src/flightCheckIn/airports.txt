@@ -9059,4 +9059,3 @@ ZZE:Zangilan International Airport
 ZZO:Zonalnoye Airport
 ZZU:Mzuzu Airport
 ZZV:Zanesville Municipal Airport
-ZZZ:Nowhere International Airport
