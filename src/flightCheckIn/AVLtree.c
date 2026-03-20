@@ -76,6 +76,8 @@ TreeNode* rotateRight(TreeNode* a)
 
 TreeNode* bigRotateLeft(TreeNode* a)
 {
+    if (a == NULL || a->rightChild == NULL)
+        return a;
     TreeNode* b = a->rightChild;
     TreeNode* c = b->leftChild;
     b->leftChild = c->rightChild;
@@ -91,7 +93,12 @@ TreeNode* bigRotateLeft(TreeNode* a)
 
 TreeNode* bigRotateRight(TreeNode* a)
 {
+    if (a == NULL || a->rightChild == NULL)
+        return a;
     TreeNode* b = a->leftChild;
+    if (b == NULL) {
+        return a;
+    }
     TreeNode* c = b->rightChild;
     a->leftChild = c->rightChild;
     b->rightChild = c->leftChild;
@@ -106,13 +113,15 @@ TreeNode* bigRotateRight(TreeNode* a)
 
 TreeNode* balance(TreeNode* node)
 {
+    if (!node)
+        return NULL;
     if (node->balance == 2) {
-        if (node->rightChild->balance >= 0)
+        if (node->rightChild && node->rightChild->balance >= 0)
             return rotateLeft(node);
         return bigRotateLeft(node);
     }
     if (node->balance == -2) {
-        if (node->leftChild->balance <= 0)
+        if (node->leftChild && node->leftChild->balance <= 0)
             return rotateRight(node);
         return bigRotateRight(node);
     }
@@ -125,8 +134,13 @@ TreeNode* insert(AVL* tree, TreeNode* node, const char* code, const char* name)
         TreeNode* newNode = calloc(1, sizeof(TreeNode));
         newNode->name = malloc(strlen(name) + 1);
         newNode->code = malloc(strlen(code) + 1);
-        strcpy(newNode->name, name);
-        strcpy(newNode->code, code);
+        size_t lenName = strlen(name);
+        newNode->name = malloc(lenName + 1);
+        strncpy(newNode->name, name, lenName + 1);
+        size_t lenCode = strlen(code);
+        newNode->code = malloc(lenCode + 1);
+        strncpy(newNode->code, code, lenCode + 1);
+
         newNode->balance = 0;
         tree->size++;
         return newNode;
@@ -143,7 +157,9 @@ TreeNode* insert(AVL* tree, TreeNode* node, const char* code, const char* name)
     else {
         free(node->name);
         node->name = malloc(strlen(name) + 1);
-        strcpy(node->name, name);
+        size_t lenName = strlen(name);
+        node->name = malloc(lenName + 1);
+        strncpy(node->name, name, lenName + 1);
         return node;
     }
     updateBalance(node);
@@ -193,13 +209,25 @@ TreeNode* avlDelete(AVL* tree, TreeNode* node, const char* code)
             return tmp;
         }
         TreeNode* succ = findMin(node->rightChild);
-        free(node->code);
-        free(node->name);
-        node->code = malloc(strlen(succ->code) + 1);
-        node->name = malloc(strlen(succ->name) + 1);
-        strcpy(node->code, succ->code);
-        strcpy(node->name, succ->name);
-        node->rightChild = avlDelete(tree, node->rightChild, succ->code);
+        char* tempCode = malloc(strlen(succ->code) + 1);
+        char* tempName = malloc(strlen(succ->name) + 1);
+
+        if (tempCode && tempName) {
+            strncpy(tempCode, succ->code, strlen(succ->code) + 1);
+            strncpy(tempName, succ->name, strlen(succ->name) + 1);
+
+            node->rightChild = avlDelete(tree, node->rightChild, tempCode);
+            free(node->code);
+            free(node->name);
+
+            node->name = tempName;
+            node->code = tempCode;
+
+        } else {
+            free(tempName);
+            free(tempCode);
+            return node;
+        }
     }
     updateBalance(node);
     return balance(node);
@@ -294,14 +322,13 @@ int avlSize(AVL* tree)
     return tree->size;
 }
 
-// подразумевается, что данные в файле корректны.
-// Предусмотрена только ситуация, когда нет ":", одновременно обрабатывает пустые строки
 AVL* loadBase(const char* filename)
 {
     AVL* tree = avlCreate();
     FILE* file = fopen(filename, "r");
     if (file == NULL) {
         printf("Файл не найден\n");
+        avlFree(tree);
         return NULL;
     }
     char buffer[100] = { 0 };

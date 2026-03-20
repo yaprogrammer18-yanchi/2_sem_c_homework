@@ -50,5 +50,7 @@ void avlSave(AVL* tree, const char* filename);
 int avlSize(AVL* tree);
 /*
     функция, загружающая данные аэропортов из файла в само дерево.
+    подразумевается, что данные в файле корректны.
+    предусмотрена только ситуация, когда нет ":"
 */
 AVL* loadBase(const char* filename);
