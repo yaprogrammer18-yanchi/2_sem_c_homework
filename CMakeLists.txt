@@ -1,3 +1,8 @@
 cmake_minimum_required(VERSION 3.25)
 project(C_HW C)
 add_compile_options(-Wall -Wextra -pedantic)
+add_library(AVLtree src/flightCheckIn/AVLtree.c)
+add_executable(testsForAVL src/flightCheckIn/tests.c)
+target_link_libraries(testsForAVL PRIVATE AVLtree)
+add_executable(main src/flightCheckIn/main.c)
+target_link_libraries(main PRIVATE AVLtree)
