@@ -56,6 +56,7 @@ void interface(AVL* tree)
             } else if (strcmp(buffer, "add") == 0) {
                 char* colon = strchr(args, ':');
                 if (colon == NULL) {
+                    printf("Неверный формат данных\n");
                     continue;
                 }
                 *colon = '\0';
