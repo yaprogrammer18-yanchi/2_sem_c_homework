@@ -1,23 +1,26 @@
 #include "TownsCountries.h"
 #include <stdlib.h>
 
-typedef struct MinHeap {
-    struct Town** data;
-    size_t size;
-    size_t capacity;
-} MinHeap;
-
-static void swapNodes(Town** a, Town** b)
-{
-    Town* tmp = *a;
-    *a = *b;
-    *b = tmp;
-}
-
 typedef struct HeapNode {
     Town* town;
     int length;
 } HeapNode;
+
+typedef struct MinHeap {
+    struct HeapNode** data;
+    size_t size;
+    size_t capacity;
+} MinHeap;
+
+static void swapNodes(HeapNode** a, HeapNode** b)
+{
+    Town* tmp = (*a)->town;
+    int tmpLen = (*a)->length;
+    (*a)->town = (*b)->town;
+    (*a)->length = (*b)->length;
+    (*b)->town = tmp;
+    (*b)->length = tmpLen;
+}
 
 HeapNode* createNode(Town* town, int len)
 {
@@ -131,11 +134,11 @@ bool heapPush(MinHeap* heap, HeapNode* node)
     return true;
 }
 
-Town* heapPop(MinHeap* heap)
+HeapNode* heapPop(MinHeap* heap)
 {
     if (!heap || heap->size == 0)
         return NULL;
-    Town* min = heap->data[0];
+    HeapNode* min = heap->data[0];
     heap->size--;
     if (heap->size > 0) {
         heap->data[0] = heap->data[heap->size];
