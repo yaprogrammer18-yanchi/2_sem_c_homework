@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-printCountryTowns(Country** arrWithCountries, int quantity)
+void printCountryTowns(Country** arrWithCountries, int quantity)
 {
     for (int i = 0; i < quantity; i++) {
         int cSize = getCountrySize(arrWithCountries[i]);
@@ -19,17 +19,28 @@ printCountryTowns(Country** arrWithCountries, int quantity)
     }
 }
 
+bool areThereAnyTownsLeft(Town** allTowns, int quantityOftowns)
+{
+    if (allTowns == NULL || quantityOftowns <= 0) {
+        return false;
+    }
+    bool smthleft = false;
+    for (int i = 0; i < quantityOftowns; i++) {
+        if (!belongsToAnyCountry(allTowns[i])) {
+            return true;
+        }
+    }
+    return false;
+}
+
 void algorithm(Country** allCountries, Town** allTowns, int quantityOfCountries, int quantityOftowns)
 {
-    while (allTowns) {
+    while (areThereAnyTownsLeft(allTowns, quantityOftowns)) {
         for (int i = 0; i < quantityOfCountries; i++) {
-
             MinHeap* tempHeap = heapCreate(4);
-
             for (int j = 0; j < quantityOftowns; j++) {
                 // проверяем, что город никому не принадлежит
                 if (!belongsToAnyCountry(allTowns[j])) {
-
                     // проверяем, что он связан хоть с одним городом этой страны
                     if (isConnectedToCountry(allCountries[i], allTowns[j])) {
                         // получаем список всех городов страны, с которыми связан текущий город
@@ -49,7 +60,6 @@ void algorithm(Country** allCountries, Town** allTowns, int quantityOfCountries,
                     }
                 }
             }
-
             // добавляем ближаший город и чистим кучу
             countryAddTown(allCountries[i], heapPop(tempHeap));
             heapFree(tempHeap);
