@@ -19,6 +19,17 @@ typedef struct HeapNode {
     int length;
 } HeapNode;
 
+HeapNode* createNode(Town* town, int len)
+{
+    HeapNode* newNode = calloc(1, sizeof(HeapNode));
+    if (newNode == NULL) {
+        return NULL;
+    }
+    newNode->length = len;
+    newNode->town = town;
+    return newNode;
+}
+
 int nodeGetSumLength(HeapNode* node)
 {
     if (node == NULL) {

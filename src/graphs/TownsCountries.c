@@ -149,7 +149,7 @@ void townAddNeighbour(Town* town, Town* neighbour, int length)
 // функция, возвращающая города страны, которые связаны с данным городом
 // на вход принимает страну и город
 // возвращает указатель на NULL-терминированный массив
-Town** townConnectedToCountryTowns(Country* country, Town* town)
+Town** townsConnectedToCountryTowns(Country* country, Town* town)
 {
     if (country == NULL || town == NULL || town->neighbours == NULL) {
         return NULL;
@@ -179,4 +179,59 @@ Town** townConnectedToCountryTowns(Country* country, Town* town)
         arr[count] = NULL;
     }
     return arr;
+}
+
+bool isConnectedToCountry(Country* country, Town* town)
+{
+    if (country == NULL || town == NULL || town->neighbours == NULL) {
+        return false;
+    }
+    int size = country->size;
+    for (int i = 0; i < size; i++) {
+        if (townConnectedToTown(town, country->towns[i])) {
+            return true;
+        }
+    }
+    return false;
+}
+
+// void freeTown(Town* town);
+
+// void freeCountry(Country* country);
+
+int getCountrySize(Country* country)
+{
+    if (country == NULL) {
+        return -1;
+    }
+    return country->size;
+}
+
+int countryGetNumber(Country* country)
+{
+    {
+        if (country == NULL) {
+            return -1;
+        }
+        return country->number;
+    }
+}
+
+Town** getCountryTowns(Country* country)
+{
+    {
+        if (country == NULL) {
+            return NULL;
+        }
+        return country->towns;
+    }
+}
+
+int getTownNumber(Town* town)
+{
+    if (town == NULL) {
+        return -1;
+    }
+
+    return town->number;
 }
