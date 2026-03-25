@@ -23,7 +23,6 @@ int getLength(Town* town1, Town* town2);
 // на вход принимает страну и город
 // возвращает указатель на NULL-терминированный массив
 Town** townsConnectedToCountryTowns(Country* country, Town* town);
-void countryAddTown(Country* country, Town* town);
 void townAddNeighbour(Town* town, Town* neighbour, int length);
 // void freeTown(Town* town);
 // void freeCountry(Country* country);

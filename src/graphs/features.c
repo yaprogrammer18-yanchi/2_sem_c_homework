@@ -9,10 +9,10 @@ void printCountryTowns(Country** arrWithCountries, int quantity)
     for (int i = 0; i < quantity; i++) {
         int cSize = getCountrySize(arrWithCountries[i]);
         if (cSize != -1) {
-            print("Государство № %d содержит города: ", countryGetNumber(arrWithCountries[i]));
+            printf("Государство № %d содержит города: ", countryGetNumber(arrWithCountries[i]));
             // проверки на корректно полученне значения
             for (int j = 0; j < cSize; j++) {
-                print("%d ", getTownNumber(getCountryTowns(arrWithCountries[i])[j]));
+                printf("%d ", getTownNumber(getCountryTowns(arrWithCountries[i])[j]));
             }
             printf("\n");
         }
@@ -24,7 +24,6 @@ bool areThereAnyTownsLeft(Town** allTowns, int quantityOftowns)
     if (allTowns == NULL || quantityOftowns <= 0) {
         return false;
     }
-    bool smthleft = false;
     for (int i = 0; i < quantityOftowns; i++) {
         if (!belongsToAnyCountry(allTowns[i])) {
             return true;
