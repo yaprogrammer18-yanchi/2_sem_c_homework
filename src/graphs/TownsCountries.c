@@ -53,10 +53,11 @@ void countryAddTown(Country* country, Town* town)
             return;
         }
     } else {
-        country->towns = realloc(country->towns, (country->size + 1) * sizeof(Town*));
-        if (country->towns == NULL) {
+        Town** tmp = realloc(country->towns, (country->size + 1) * sizeof(Town*));
+        if (tmp == NULL) {
             return;
         }
+        country->towns = tmp;
     }
     country->towns[country->size] = town;
     country->size++;
@@ -131,15 +132,16 @@ void townAddNeighbour(Town* town, Town* neighbour, int length)
         town->lengthToNeighbours[town->size] = length;
         town->size++;
     } else {
-        town->neighbours = realloc(town->neighbours, sizeof(Town*) * (town->size + 1));
-        if (town->neighbours == NULL) {
+        Town** tmp = realloc(town->neighbours, sizeof(Town*) * (town->size + 1));
+        if (tmp == NULL) {
             return;
         }
-
-        town->lengthToNeighbours = realloc(town->lengthToNeighbours, sizeof(int) * (town->size + 1));
-        if (town->lengthToNeighbours == NULL) {
+        town->neighbours = tmp;
+        int* lenTmp = realloc(town->lengthToNeighbours, sizeof(int) * (town->size + 1));
+        if (lenTmp == NULL) {
             return;
         }
+        town->lengthToNeighbours = lenTmp;
         town->lengthToNeighbours[town->size] = length;
         town->neighbours[town->size] = neighbour;
         town->size++;
