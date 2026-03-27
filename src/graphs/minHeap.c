@@ -134,7 +134,7 @@ bool heapPush(MinHeap* heap, HeapNode* node)
     return true;
 }
 
-HeapNode* heapPop(MinHeap* heap)
+Town* heapPop(MinHeap* heap)
 {
     if (!heap || heap->size == 0)
         return NULL;
@@ -144,7 +144,7 @@ HeapNode* heapPop(MinHeap* heap)
         heap->data[0] = heap->data[heap->size];
         siftDown(heap, 0);
     }
-    return min;
+    return min->town;
 }
 
 int heapEmpty(const MinHeap* heap)
