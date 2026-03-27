@@ -78,7 +78,7 @@ Container* readFileAndInitialize(char* filename)
                     size++;
                 }
             } else {
-                newT1 = getTown(allTowns, townNum1, quantityOfTowns);
+                newT1 = getTown(allTowns, townNum1, size);
             }
 
             if (!alreadyCreatedTown(allTowns, townNum2, size)) {

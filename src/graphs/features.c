@@ -10,7 +10,6 @@ void printCountryTowns(Country** arrWithCountries, int quantity)
         int cSize = getCountrySize(arrWithCountries[i]);
         if (cSize != -1) {
             printf("Государство № %d содержит города: ", countryGetNumber(arrWithCountries[i]));
-            // проверки на корректно полученне значения
             for (int j = 0; j < cSize; j++) {
                 printf("%d ", getTownNumber(getCountryTowns(arrWithCountries[i])[j]));
             }
