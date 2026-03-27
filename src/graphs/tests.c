@@ -313,7 +313,7 @@ void testHeapNullCases(void)
 
 void testAreThereAnyTownsLeft(void)
 {
-    const int n = 3;
+    int n = 3;
     Town* towns[n];
     for (int i = 0; i < n; i++) {
         towns[i] = townCreate(i + 1);
