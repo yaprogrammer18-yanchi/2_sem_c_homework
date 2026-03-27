@@ -154,10 +154,13 @@ void completeTask(Container* cont)
     algorithm(cont->allCountries, cont->allTowns, cont->quantityOfCountries, cont->quantityOfTowns);
     printCountryTowns(cont->allCountries, cont->quantityOfCountries);
 }
-
-int main(void)
+int main(int argc, char* argv[])
 {
-    Container* cont = readFileAndInitialize("/home/yanchi/2_sem_repo/src/graphs/matrix.txt");
+    if (argc < 2) {
+        return 1;
+    }
+
+    Container* cont = readFileAndInitialize(argv[1]);
     completeTask(cont);
     containerFree(cont);
     return 0;
