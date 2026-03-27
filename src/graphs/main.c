@@ -11,6 +11,13 @@ typedef struct container {
     int quantityOfCountries;
 } container;
 
+void containerFree(container* cont)
+{
+    freeTownArr(cont->allTowns, cont->quantityOfTowns);
+    freeCountryArr(cont->allCountries, cont->quantityOfCountries);
+    free(cont);
+}
+
 bool alreadyCreatedTown(Town** allTowns, int num, int quantityOfTowns)
 {
     for (int i = 0; i < quantityOfTowns; i++) {
@@ -44,6 +51,10 @@ container* readFileAndInitialize(char* filename)
         return NULL;
     }
     Town** allTowns = calloc(quantityOfTowns, sizeof(Town*));
+    if (allTowns == NULL) {
+        free(allTowns);
+        return NULL;
+    }
     int size = 0;
     int townNum1 = 0;
     int townNum2 = 0;
@@ -78,6 +89,12 @@ container* readFileAndInitialize(char* filename)
         return NULL;
     }
     Country** allCountries = calloc(quantityOfCountries, sizeof(Country*));
+    if (allCountries == NULL) {
+
+        freeTownArr(allTowns, quantityOfTowns);
+        free(allCountries);
+        return NULL;
+    }
     int cSize = 0;
     int capitalNum = 0;
     for (int j = 0; j < quantityOfCountries; j++) {
@@ -89,6 +106,11 @@ container* readFileAndInitialize(char* filename)
         }
     }
     container* res = calloc(1, sizeof(container));
+    if (res == NULL) {
+        freeTownArr(allTowns, quantityOfTowns);
+        freeCountryArr(allCountries, quantityOfCountries);
+        return NULL;
+    }
     res->allTowns = allTowns;
     res->quantityOfTowns = quantityOfTowns;
     res->quantityOfCountries = quantityOfCountries;
@@ -107,5 +129,6 @@ int main(void)
 {
     container* cont = readFileAndInitialize("/home/yanchi/2_sem_repo/src/graphs/matrix.txt");
     completeTask(cont);
+    containerFree(cont);
     return 0;
 }

@@ -31,3 +31,7 @@ int countryGetNumber(Country* country);
 Town** getCountryTowns(Country* country);
 int getTownNumber(Town* town);
 bool isConnectedToCountry(Country* country, Town* town);
+void freeTown(Town* town);
+void freeCountry(Country* country);
+void freeTownArr(Town** arr, int size);
+void freeCountryArr(Country** arr, int size);

@@ -95,15 +95,6 @@ MinHeap* heapCreate(size_t capacity)
     return heap;
 }
 
-void heapFree(MinHeap* heap)
-{
-    if (!heap) {
-        return;
-    }
-    free(heap->data);
-    free(heap);
-}
-
 static bool heapResize(MinHeap* heap, size_t newCapacity)
 {
     HeapNode** tmp = realloc(heap->data, newCapacity * sizeof(HeapNode*));
@@ -129,12 +120,13 @@ bool heapPush(MinHeap* heap, HeapNode* node)
             return false;
     }
     heap->data[heap->size] = node;
-    siftUp(heap, heap->size);
     heap->size++;
+    siftUp(heap, (heap->size - 1));
+
     return true;
 }
 
-Town* heapPop(MinHeap* heap)
+HeapNode* heapPop(MinHeap* heap)
 {
     if (!heap || heap->size == 0)
         return NULL;
@@ -144,7 +136,15 @@ Town* heapPop(MinHeap* heap)
         heap->data[0] = heap->data[heap->size];
         siftDown(heap, 0);
     }
-    return min->town;
+    return min;
+}
+
+Town* getTownFromHeapNode(HeapNode* node)
+{
+    if (node == NULL) {
+        return NULL;
+    }
+    return node->town;
 }
 
 int heapEmpty(const MinHeap* heap)
@@ -155,4 +155,17 @@ int heapEmpty(const MinHeap* heap)
 size_t heapSize(const MinHeap* heap)
 {
     return heap ? heap->size : 0;
+}
+
+void heapFree(MinHeap* heap)
+{
+    if (!heap) {
+        return;
+    }
+    while (!heapEmpty(heap)) {
+        HeapNode* node = heapPop(heap);
+        free(node);
+    }
+    free(heap->data);
+    free(heap);
 }

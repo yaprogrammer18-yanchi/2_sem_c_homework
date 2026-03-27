@@ -56,11 +56,17 @@ void algorithm(Country** allCountries, Town** allTowns, int quantityOfCountries,
                         }
                         HeapNode* newHeapNode = createNode(allTowns[j], min);
                         heapPush(tempHeap, newHeapNode);
+                        free(townsConnected);
                     }
                 }
             }
             // добавляем ближаший город и чистим кучу
-            countryAddTown(allCountries[i], heapPop(tempHeap));
+            HeapNode* best = heapPop(tempHeap);
+            if (best != NULL) {
+                Town* bestTown = getTownFromHeapNode(best);
+                countryAddTown(allCountries[i], bestTown);
+            }
+            free(best);
             heapFree(tempHeap);
         }
     }

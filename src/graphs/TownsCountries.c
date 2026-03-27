@@ -19,6 +19,45 @@ typedef struct Country {
 
 } Country;
 
+void freeTownArr(Town** arr, int size)
+{
+    if (arr == NULL) {
+        return;
+    }
+    for (int i = 0; i < size; i++) {
+        freeTown(arr[i]);
+    }
+}
+
+void freeCountryArr(Country** arr, int size)
+{
+    if (arr == NULL) {
+        return;
+    }
+    for (int i = 0; i < size; i++) {
+        freeCountry(arr[i]);
+    }
+}
+
+void freeTown(Town* town)
+{
+    if (town == NULL) {
+        return;
+    }
+    free(town->neighbours);
+    free(town->lengthToNeighbours);
+    free(town);
+}
+
+void freeCountry(Country* country)
+{
+    if (country == NULL) {
+        return;
+    }
+    free(country->towns);
+    free(country);
+}
+
 Town* townCreate(int number)
 {
     Town* newTown = calloc(1, sizeof(Town));
@@ -196,10 +235,6 @@ bool isConnectedToCountry(Country* country, Town* town)
     }
     return false;
 }
-
-// void freeTown(Town* town);
-
-// void freeCountry(Country* country);
 
 int getCountrySize(Country* country)
 {
