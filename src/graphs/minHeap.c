@@ -14,6 +14,9 @@ typedef struct MinHeap {
 
 static void swapNodes(HeapNode** a, HeapNode** b)
 {
+    if (a == NULL || b == NULL || *a == NULL || *b == NULL) {
+        return;
+    }
     Town* tmp = (*a)->town;
     int tmpLen = (*a)->length;
     (*a)->town = (*b)->town;
