@@ -11,6 +11,8 @@ add_executable(testsForGraphsTask src/graphs/tests.c)
 add_executable(graphsTask src/graphs/main.c)
 
 target_link_libraries(testsForGraphsTask PRIVATE TandC)
+target_link_libraries(testsForGraphsTask PRIVATE MinHeap)
+target_link_libraries(testsForGraphsTask PRIVATE features)
 target_link_libraries(MinHeap PRIVATE TandC)
 target_link_libraries(features PRIVATE MinHeap)
 target_link_libraries(graphsTask PRIVATE TandC)
