@@ -20,7 +20,6 @@ void freeArrInArr(char** arr, int len)
         free(arr[i]);
     }
     free(arr);
-    return;
 }
 
 void freeTable(Table* table)
