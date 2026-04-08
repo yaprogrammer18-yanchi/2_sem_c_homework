@@ -42,6 +42,7 @@ Table* readCsv(const char* filepath)
 
     table->data = calloc(100, sizeof(char*));
     if (table->data == NULL) {
+        free(table);
         return NULL;
     }
     table->cols = 0;
@@ -282,10 +283,8 @@ bool printTable(const char* filepathInput, const char* filepathOutput)
 
     if (maxLengthArr == NULL) {
         printf("Ошибка\n");
-        free(maxLengthArr);
         freeTable(table);
         freeArrInArr(allWords, words);
-        free(allWords);
         return false;
     }
     getMaxLengthOfColInArr(allWords, table->cols, table->rows, maxLengthArr);
