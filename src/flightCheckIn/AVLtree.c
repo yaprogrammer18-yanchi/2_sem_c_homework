@@ -134,12 +134,8 @@ TreeNode* insert(AVL* tree, TreeNode* node, const char* code, const char* name)
         TreeNode* newNode = calloc(1, sizeof(TreeNode));
         newNode->name = malloc(strlen(name) + 1);
         newNode->code = malloc(strlen(code) + 1);
-        size_t lenName = strlen(name);
-        newNode->name = malloc(lenName + 1);
-        strncpy(newNode->name, name, lenName + 1);
-        size_t lenCode = strlen(code);
-        newNode->code = malloc(lenCode + 1);
-        strncpy(newNode->code, code, lenCode + 1);
+        strcpy(newNode->name, name);
+        strcpy(newNode->code, code);
 
         newNode->balance = 0;
         tree->size++;
