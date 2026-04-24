@@ -134,9 +134,10 @@ TreeNode* insert(AVL* tree, TreeNode* node, const char* code, const char* name)
         TreeNode* newNode = calloc(1, sizeof(TreeNode));
         newNode->name = malloc(strlen(name) + 1);
         newNode->code = malloc(strlen(code) + 1);
+        // NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.strcpy)
         strcpy(newNode->name, name);
+        // NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.strcpy)
         strcpy(newNode->code, code);
-
         newNode->balance = 0;
         tree->size++;
         return newNode;
