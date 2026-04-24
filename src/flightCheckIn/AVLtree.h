@@ -1,7 +1,6 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-typedef struct TreeNode TreeNode;
 typedef struct AVL AVL;
 /*
     функция, создающая АВЛ-дерево
