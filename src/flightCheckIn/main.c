@@ -69,6 +69,38 @@ void interface(AVL* tree)
     }
 }
 
+AVL* loadBase(const char* filename)
+{
+    AVL* tree = avlCreate();
+    FILE* file = fopen(filename, "r");
+    if (file == NULL) {
+        printf("Файл не найден\n");
+        avlFree(tree);
+        return NULL;
+    }
+    char buffer[100] = { 0 };
+    while ((fgets(buffer, sizeof(buffer), file) != NULL)) {
+        size_t indexOfLineBreak = strcspn(buffer, "\n");
+        if (indexOfLineBreak < sizeof(buffer)) {
+            buffer[indexOfLineBreak] = '\0';
+        } else {
+            buffer[sizeof(buffer) - 1] = '\0';
+        }
+        char* colon = strchr(buffer, ':');
+        if (colon == NULL) {
+            continue;
+        }
+        *colon = '\0';
+        char* code = buffer;
+        char* name = colon + 1;
+        avlPush(tree, code, name);
+    }
+    fclose(file);
+    int qty = avlSize(tree);
+    printf("Загружено %d аэропортов. Система готова к работе.\n", qty);
+    return tree;
+}
+
 int main(int argc, char* argv[])
 {
     if (argc < 2) {
@@ -76,6 +108,7 @@ int main(int argc, char* argv[])
     }
     AVL* tree = loadBase(argv[1]);
     if (tree == NULL) {
+        printf("что-то пошло не так");
         return 1;
     }
     interface(tree);
